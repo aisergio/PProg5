@@ -11,6 +11,7 @@
     <Button fx:id="answerButton1" style="-fx-background-color: #4CAF50; -fx-font-size: 20;"/>
     <Button fx:id="answerButton2" style="-fx-background-color: #4CAF50; -fx-font-size: 20;"/>
     <Button fx:id="answerButton3" style="-fx-background-color: #4CAF50; -fx-font-size: 20;"/>
+    <Button fx:id="answerButton4" style="-fx-background-color: #4CAF50; -fx-font-size: 20;"/>
     <padding>
         <Insets top="50" bottom="50" left="50" right="50"/>
     </padding>

@@ -1,11 +1,16 @@
 package geomate.controller;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
+import geomate.model.Question;
+import geomate.model.QuestionManager;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class QuestionController {
@@ -22,28 +27,39 @@ public class QuestionController {
     private Button answerButton2;
     @FXML
     private Button answerButton3;
+    @FXML
+    private Button answerButton4;
+
+    private Question currentQuestion;
 
     @FXML
     public void initialize() {
-        // Configurar la pregunta y las respuestas (esto puede ser dinámico en una implementación más completa)
-        questionLabel.setText("¿Cuál es la distancia promedio entre la Tierra y Marte?");
-        answerButton1.setText("78M Km");
-        answerButton2.setText("225M Km");
-        answerButton3.setText("384M Km");
-
-        answerButton1.setOnAction(event -> mostrarResultado(false));
-        answerButton2.setOnAction(event -> mostrarResultado(true));
-        answerButton3.setOnAction(event -> mostrarResultado(false));
+        loadRandomQuestion();
     }
 
-    private void mostrarResultado(boolean esCorrecta) {
-        String mensaje = esCorrecta ? "¡Correcto!" : "Incorrecto. Intenta de nuevo.";
-        Stage resultadoStage = new Stage();
-        Label resultadoLabel = new Label(mensaje);
-        resultadoLabel.setStyle(esCorrecta ? "-fx-text-fill: green;" : "-fx-text-fill: red;");
-        VBox vbox = new VBox(resultadoLabel);
-        vbox.setAlignment(Pos.CENTER);
-        resultadoStage.setScene(new Scene(vbox, 200, 100));
-        resultadoStage.show();
+    private void loadRandomQuestion() {
+        currentQuestion = QuestionManager.getRandomQuestion();
+        if (currentQuestion != null) {
+            questionLabel.setText(currentQuestion.getQuestionText());
+            String[] answers = currentQuestion.getAnswers();
+            answerButton1.setText(answers[0]);
+            answerButton2.setText(answers[1]);
+            answerButton3.setText(answers[2]);
+            answerButton4.setText(answers[3]);
+
+            answerButton1.setOnAction(event -> handleAnswer(0));
+            answerButton2.setOnAction(event -> handleAnswer(1));
+            answerButton3.setOnAction(event -> handleAnswer(2));
+            answerButton4.setOnAction(event -> handleAnswer(3));
+        }
+    }
+
+    private void handleAnswer(int selectedIndex) {
+        boolean isCorrect = currentQuestion.isCorrectAnswer(selectedIndex);
+        String message = isCorrect ? "¡Correcto!" : "Incorrecto. Intenta de nuevo.";
+        questionLabel.setText(message);
+
+        // Espera un segundo antes de cargar la siguiente pregunta
+        new Timeline(new KeyFrame(Duration.seconds(1), e -> loadRandomQuestion())).play();
     }
 }
